@@ -1,0 +1,6 @@
+<resources>
+    <string name="button">Get data</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="app_name">TNK115 - Project 2022</string>
+    <string name="data_status">Data status</string>
+</resources>

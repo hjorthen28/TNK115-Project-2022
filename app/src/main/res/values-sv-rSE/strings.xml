@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TNK115 - Projekt 2022</string>
+    <string name="button">Hämta data</string>
+    <string name="edit_message">Ange ett meddelande</string>
+    <string name="data_status">Data status</string>
+</resources>
