@@ -28,4 +28,8 @@ public class Link {
     public double ttelev;
     @ColumnInfo(name = "ttwcpqcoeff")
     public double ttwc;
+
+    public String toString() {
+        return "Source:"+source+" Destination:"+destination+" Distance"+dist;
+    }
 }

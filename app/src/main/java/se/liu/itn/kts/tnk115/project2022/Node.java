@@ -13,4 +13,8 @@ public class Node {
     public double lat;
     @ColumnInfo(name = "longitude")
     public double lng;
+
+    public String toString() {
+        return "Node:"+id+" Coordinates: ("+lat+" "+lng+")";
+    }
 }

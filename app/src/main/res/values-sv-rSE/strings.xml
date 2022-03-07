@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">TNK115 - Projekt 2022</string>
     <string name="button">Hämta data</string>
-    <string name="edit_message">Ange ett meddelande</string>
-    <string name="data_status">Data status</string>
+    <string name="bike">Cykel</string>
+    <string name="walk">Gå</string>
+    <string name="wheelchair">Rullstol</string>
+    <string name="make_route">Skapa färdväg</string>
+    <string name="currOut">Du är utanför området!</string>
+    <string name="markOut">Markören är utanför området!</string>
 </resources>

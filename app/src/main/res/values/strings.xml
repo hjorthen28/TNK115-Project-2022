@@ -1,6 +1,10 @@
 <resources>
-    <string name="button">Get data</string>
-    <string name="edit_message">Enter a message</string>
     <string name="app_name">TNK115 - Project 2022</string>
-    <string name="data_status">Data status</string>
+    <string name="button">Get data</string>
+    <string name="bike">Bike</string>
+    <string name="walk">Walk</string>
+    <string name="wheelchair">Wheelchair</string>
+    <string name="make_route">Make route</string>
+    <string name="currOut">You are outside the area!</string>
+    <string name="markOut">The marker is outside the area!</string>
 </resources>
