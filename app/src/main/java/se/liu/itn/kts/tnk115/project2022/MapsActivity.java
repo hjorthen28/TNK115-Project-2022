@@ -83,7 +83,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String nID[] = path.split("->");
         ArrayList<LatLng> nC = new ArrayList<>();
 
-
         for (int i=0; i<nID.length; i++) {
             Node node = MainActivity.nodeDao.getNode(Integer.parseInt(nID[i].trim()));
             nC.add(new LatLng(node.lat,node.lng));

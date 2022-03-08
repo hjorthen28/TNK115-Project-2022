@@ -18,7 +18,7 @@ public class Link {
     public int pave;
     @ColumnInfo(name = "pedpavequality")
     public int pedp;
-    @ColumnInfo(name = "wvpavequality")
+    @ColumnInfo(name = "wcpavequality")
     public int wcpave;
     @ColumnInfo(name = "ttcog")
     public double ttcog;

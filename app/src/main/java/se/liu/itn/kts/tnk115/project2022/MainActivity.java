@@ -25,8 +25,10 @@ import android.os.StrictMode;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap map = null;
     private Marker marker;
     private LatLngBounds norrkopingBounds;
-    private OptPlan theOP;
+    private int mode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +106,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Create node database
         linkDB = Room.databaseBuilder(getApplicationContext(), LinkDatabase.class, "link").allowMainThreadQueries().build();
         linkDao = linkDB.userDao();
-
-        // Create a plan later used for Dijkstra algorithm
-        theOP = new OptPlan();
 
         // Configure weight sliders
         configureSliders();
@@ -131,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         // Create the optPlan and activates the makeRoute alternative
                         button.setText(getString(R.string.make_route));
-                        theOP.addList(nodeDao.getAllNodes(),linkDao.getAllLinks());
-                        theOP.createPlan();
                         first = false;
                     } else {
                         // Get the current position of the user and assess if the app can make a route
@@ -147,6 +144,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         requestLocationPermission();
                     }
                 }
+            }
+        });
+
+        Spinner modeSpinner = (Spinner) findViewById(R.id.mode_spinner);
+        modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mode = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -378,17 +388,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return result;
         }
 
-        /*String IMEI;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            IMEI = tm.getImei();
-            //IMEI = tm.getMeid();
-        } else {
-            IMEI = tm.getDeviceId();
-        }
-
-        //IMEI = tm.getDeviceId();
-        Log.d("MainActivity","IMEI: "+IMEI);*/
-
         JSONObject message = new JSONObject();
         try {
             message.put("message_type", "project2022");
@@ -498,6 +497,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng markP = marker.getPosition();
         int currPi = 0;
         int markPi = 0;
+
+        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pace_bar);
+        List<Float> paceValues = paceSlider.getValues();
+        double pace = paceValues.get(0);
+        RangeSlider elevSlider = (RangeSlider) findViewById(R.id.elev_bar);
+        List<Float> elevValues = elevSlider.getValues();
+        double elev = elevValues.get(0);
+        RangeSlider airSlider = (RangeSlider) findViewById(R.id.air_bar);
+        List<Float> airValues = airSlider.getValues();
+        double air = airValues.get(0);
+        RangeSlider ttSlider = (RangeSlider) findViewById(R.id.tt_bar);
+        List<Float> ttValues = ttSlider.getValues();
+        double tt = ttValues.get(0);
+
+        Log.d("MainActivity","Mode: "+mode+" Pace: "+pace+" Elev: "+elev+" Air: "+air+" TT: "+tt);
+
+        OptPlan theOP = new OptPlan();
+        theOP.createPlan(mode, pace, elev, air, tt);
 
         if (norrkopingBounds.contains(currP) && norrkopingBounds.contains(markP)) {
             Toast.makeText(MainActivity.this, "Making route", Toast.LENGTH_SHORT).show();
