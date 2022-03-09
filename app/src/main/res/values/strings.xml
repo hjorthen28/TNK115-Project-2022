@@ -7,4 +7,8 @@
     <string name="make_route">Make route</string>
     <string name="currOut">You are outside the area!</string>
     <string name="markOut">The marker is outside the area!</string>
+    <string name="pace">Pavement-bar</string>
+    <string name="elev">Elevation-bar</string>
+    <string name="air">Air-bar</string>
+    <string name="tt">Travel time-bar</string>
 </resources>

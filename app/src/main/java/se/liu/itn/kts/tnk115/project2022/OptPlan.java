@@ -24,19 +24,31 @@ public class OptPlan {
         this.linkList = null;
     }
 
+    // Creating links and nodes
     public void createPlan(int mode, double paveRate, double elevRate, double airRate, double ttRate) {
         this.nodeList = MainActivity.nodeDao.getAllNodes();
         this.linkList = MainActivity.linkDao.getAllLinks();
         nodes = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
-        ArrayList<Double> tt = new ArrayList<Double>();
 
+        // Converting the nodes to Vertex to be used in Dijkstra
         for (int i=0; i<nodeList.size(); i++) {
             Vertex location = new Vertex(String.valueOf(nodeList.get(i).id),"Nod #"+nodeList.get(i).id);
             nodes.add(location);
         }
 
-        if (!(paveRate == 0 && elevRate == 0 && airRate == 0 && ttRate == 0)) {
+        // If no weights are active the algorithm just takes the shortest distance
+        if (paveRate == 0 && elevRate == 0 && airRate == 0 && ttRate == 0) {
+            for (int i=0; i<linkList.size(); i++) {
+                cost = (double)linkList.get(i).dist;
+
+                Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
+
+                Edge arc = new Edge("c"+i,nodes.get(linkList.get(i).source-1),nodes.get(linkList.get(i).destination-1),cost);
+                edges.add(arc);
+            }
+        } else {
+            ArrayList<Double> tt = new ArrayList<Double>();
             minDist = (double)MainActivity.linkDao.getMinDist();
             maxDist = (double)MainActivity.linkDao.getMaxDist();
             Log.d("OptPlan","Dist: "+minDist+" "+maxDist);
@@ -59,7 +71,7 @@ public class OptPlan {
             }
 
             minTT = Double.MAX_VALUE;
-            maxTT = -1.0;
+            maxTT = Double.MIN_VALUE;
             for (int i=0; i<linkList.size(); i++) {
                 double value = 0.0;
                 if (mode == 1) {
@@ -75,12 +87,8 @@ public class OptPlan {
             }
 
             Log.d("OptPlan","TT: "+minTT+" "+maxTT);
-        }
 
-        for (int i=0; i<linkList.size(); i++) {
-            if (paveRate == 0 && elevRate == 0 && airRate == 0 && ttRate == 0) {
-                cost = (double)linkList.get(i).dist;
-            } else {
+            for (int i=0; i<linkList.size(); i++) {
                 if (mode == 1) {
                     paveNorm = (double)((double)linkList.get(i).pedp-minPave)/(maxPave-minPave);
                 } else if (mode == 2) {
@@ -94,14 +102,13 @@ public class OptPlan {
                 distNorm = ((double)linkList.get(i).dist-minDist)/(maxDist-minDist);
                 ttNorm = ((double)tt.get(i)-minTT)/(maxTT-minTT);
 
-                double c = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate)*distNorm+ttNorm*ttRate);
-                cost = c;
+                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate)*distNorm+ttNorm*ttRate);
+
+                Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
+
+                Edge arc = new Edge("c"+i,nodes.get(linkList.get(i).source-1),nodes.get(linkList.get(i).destination-1),cost);
+                edges.add(arc);
             }
-
-            Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
-
-            Edge arc = new Edge("c"+i,nodes.get(linkList.get(i).source-1),nodes.get(linkList.get(i).destination-1),cost);
-            edges.add(arc);
         }
 
         Graph graph = new Graph(nodes,edges);
@@ -109,15 +116,7 @@ public class OptPlan {
         dijkstra = new Dijkstra(graph);
     }
 
-    public LinkedList<Vertex> movement(int start, int fin) {
-        // Compute shortest path
-        dijkstra.execute(nodes.get(start-1));
-        // To fin node:
-        LinkedList<Vertex> path = dijkstra.getPath(nodes.get(fin-1));
-
-        return path;
-    }
-
+    // Return the shortest path
     public String getPath(int start, int fin) {
         // Compute shortest path
         dijkstra.execute(nodes.get(start-1));

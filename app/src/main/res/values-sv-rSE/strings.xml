@@ -8,4 +8,8 @@
     <string name="make_route">Skapa färdväg</string>
     <string name="currOut">Du är utanför området!</string>
     <string name="markOut">Markören är utanför området!</string>
+    <string name="pace">Pavement-bar</string>
+    <string name="elev">Elevation-bar</string>
+    <string name="air">Air-bar</string>
+    <string name="tt">Travel time-bar</string>
 </resources>
