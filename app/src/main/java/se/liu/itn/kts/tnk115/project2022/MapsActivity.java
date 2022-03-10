@@ -65,7 +65,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("MainActivity", "Map ready");
         mMap = googleMap;
         mMap.clear();
-        LatLng norrkoping = new LatLng(58.588455, 16.188313);
+        LatLng norrkoping = new LatLng(58.59097655119428, 16.183341830042274);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(norrkoping, 14.5f));
 

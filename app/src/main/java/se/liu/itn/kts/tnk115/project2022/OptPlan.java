@@ -58,7 +58,7 @@ public class OptPlan {
             minAir = (double)MainActivity.linkDao.getMinAir();
             maxAir = (double)MainActivity.linkDao.getMaxAir();
             Log.d("OptPlan","Air: "+minAir+" "+maxAir);
-            
+
             if (mode == 1) {
                 minPave = (double)MainActivity.linkDao.getMinPed();
                 maxPave = (double)MainActivity.linkDao.getMaxPed();
@@ -71,7 +71,7 @@ public class OptPlan {
             }
 
             minTT = Double.MAX_VALUE;
-            maxTT = -1.0;
+            maxTT = Double.MIN_VALUE;
             for (int i=0; i<linkList.size(); i++) {
                 double value = 0.0;
                 if (mode == 1) {
@@ -87,7 +87,6 @@ public class OptPlan {
             }
 
             Log.d("OptPlan","TT: "+minTT+" "+maxTT);
-
 
             for (int i=0; i<linkList.size(); i++) {
                 if (mode == 1) {
@@ -117,15 +116,7 @@ public class OptPlan {
         dijkstra = new Dijkstra(graph);
     }
 
-    public LinkedList<Vertex> movement(int start, int fin) {
-        // Compute shortest path
-        dijkstra.execute(nodes.get(start-1));
-        // To fin node:
-        LinkedList<Vertex> path = dijkstra.getPath(nodes.get(fin-1));
-
-        return path;
-    }
-
+    // Return the shortest path
     public String getPath(int start, int fin) {
         // Compute shortest path
         dijkstra.execute(nodes.get(start-1));
