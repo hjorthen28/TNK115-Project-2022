@@ -530,8 +530,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (norrkopingBounds.contains(currP) && norrkopingBounds.contains(markP)) {
             Toast.makeText(MainActivity.this, "Making route", Toast.LENGTH_SHORT).show();
             currPi = getMin(currP.latitude,currP.longitude);
+            //currPi = 101;
             Log.d("MainActivity",nodeDao.getNode(currPi).toString());
             markPi = getMin(markP.latitude,markP.longitude);
+            //markPi = 65;
             Log.d("MainActivity",nodeDao.getNode(markPi).toString());
             String path = theOP.getPath(currPi,markPi);
 
