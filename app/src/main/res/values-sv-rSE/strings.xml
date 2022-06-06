@@ -8,10 +8,12 @@
     <string name="make_route">Skapa färdväg</string>
     <string name="currOut">Du är utanför området!</string>
     <string name="markOut">Markören är utanför området!</string>
-    <string name="pace">Vägkvalitet</string>
     <string name="elev">Lutning</string>
     <string name="air">Luftkvalitet</string>
     <string name="tt">Restid</string>
     <string name="buttonUpdate">Uppdatera värden</string>
-    <string name="update">Uppdatera</string>
+    <string name="update">Uppdatera data</string>
+    <string name="noise">Ljudnivå</string>
+    <string name="temp">Temperatur</string>
+    <string name="pave">Vägkvalitet</string>
 </resources>

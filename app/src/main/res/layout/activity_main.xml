@@ -48,40 +48,29 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:text="@string/button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Spinner
-        android:id="@+id/mode_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-
-        android:entries="@array/mode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
-
     <com.google.android.material.slider.RangeSlider
-        android:id="@+id/pace_bar"
+        android:id="@+id/pave_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
-        app:layout_constraintBottom_toTopOf="@+id/elev_bar"
+        app:layout_constraintBottom_toTopOf="@+id/temp_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mode_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/elev_bar"
@@ -95,21 +84,21 @@
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pace_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/temp_bar" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/air_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
         android:layout_height="28dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
-        app:layout_constraintBottom_toTopOf="@+id/tt_bar"
+        app:layout_constraintBottom_toTopOf="@+id/noise_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mode_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/tt_bar"
@@ -123,22 +112,70 @@
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/air_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/noise_bar" />
 
     <TextView
         android:id="@+id/pace_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="@string/pace"
-        app:layout_constraintBottom_toTopOf="@+id/pace_bar"
+        android:text="@string/pave"
+        app:layout_constraintBottom_toTopOf="@+id/pave_bar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/noise_bar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/tt_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/air_bar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/noise_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/noise"
+        app:layout_constraintBottom_toTopOf="@+id/noise_bar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/temp_bar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/elev_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pave_bar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/temp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/temp"
+        app:layout_constraintBottom_toTopOf="@+id/temp_bar"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="93dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
         android:text="@string/update"

@@ -26,7 +26,7 @@ public class OptPlan {
     }
 
     // Creating links and nodes
-    public void createPlan(int mode, double paveRate, double elevRate, double airRate, double ttRate) {
+    public void createPlan(int mode, double paveRate, double elevRate, double airRate, double ttRate, double tempRate, double noiseRate) {
         this.nodeList = MainActivity.nodeDao.getAllNodes();
         this.linkList = MainActivity.linkDao.getAllLinks();
         nodes = new ArrayList<Vertex>();
@@ -119,7 +119,7 @@ public class OptPlan {
                     noiseNorm = (linkList.get(i).noise - minNoise) / (maxNoise - minNoise);
                 }
 
-                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate)*distNorm+ttNorm*ttRate);
+                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate+noiseNorm*noiseRate+tempNorm*tempRate)*distNorm+ttNorm*ttRate);
 
                 //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 
