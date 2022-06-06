@@ -3,13 +3,15 @@
     <string name="app_name">TNK115 - Projekt 2022</string>
     <string name="button">Hämta data</string>
     <string name="bike">Cykel</string>
-    <string name="walk">Gå</string>
-    <string name="wheelchair">Rullstol</string>
+    <string name="walk">Gång</string>
+    <string name="reduced">Reducerad</string>
     <string name="make_route">Skapa färdväg</string>
     <string name="currOut">Du är utanför området!</string>
     <string name="markOut">Markören är utanför området!</string>
-    <string name="pace">Pavement-bar</string>
-    <string name="elev">Elevation-bar</string>
-    <string name="air">Air-bar</string>
-    <string name="tt">Travel time-bar</string>
+    <string name="pace">Vägkvalitet</string>
+    <string name="elev">Lutning</string>
+    <string name="air">Luftkvalitet</string>
+    <string name="tt">Restid</string>
+    <string name="buttonUpdate">Uppdatera värden</string>
+    <string name="update">Uppdatera</string>
 </resources>

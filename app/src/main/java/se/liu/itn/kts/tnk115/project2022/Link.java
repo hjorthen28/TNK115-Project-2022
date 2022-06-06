@@ -28,6 +28,10 @@ public class Link {
     public double ttelev;
     @ColumnInfo(name = "ttwcpqcoeff")
     public double ttwc;
+    @ColumnInfo(name = "temperature")
+    public double temp;
+    @ColumnInfo(name = "noise")
+    public double noise;
 
     public String toString() {
         return "Source:"+source+" Destination:"+destination+" Distance"+dist;

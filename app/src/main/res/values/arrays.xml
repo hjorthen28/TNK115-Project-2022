@@ -3,6 +3,6 @@
     <array name="mode">
         <item>@string/bike</item>
         <item>@string/walk</item>
-        <item>@string/wheelchair</item>
+        <item>@string/reduced</item>
     </array>
 </resources>

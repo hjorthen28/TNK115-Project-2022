@@ -38,6 +38,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -64,6 +65,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -82,9 +84,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String address = "130.236.81.13";
     private int port = 8718;
     private GoogleMap map = null;
+    private Polyline line;
     private Marker marker;
+    //private Marker markerStart;
     private LatLngBounds norrkopingBounds;
     private int mode = 0;
+    private String path = "";
+    private Intent updateIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         configureSliders();
 
         Button button = (Button) findViewById(R.id.button);
+        Button update = (Button) findViewById(R.id.button2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +155,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        updateIntent = new Intent(this,UpdateActivity.class);
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (path != null) {
+                    updateIntent.putExtra(EXTRA_MESSAGE, path);
+                } else {
+                    updateIntent.putExtra(EXTRA_MESSAGE,"");
+                }
+                startActivity(updateIntent);
+            }
+        });
+
+        //TODO: Remove option to change mode
         // Update which mode the user has selected
         Spinner modeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -244,6 +266,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Add a dragable marker in the centre of Norrköping
         LatLng norrkoping = new LatLng(58.59097655119428, 16.183341830042274);
         marker = map.addMarker(new MarkerOptions().position(norrkoping).title("Norrköping").draggable(true));
+        //markerStart = map.addMarker(new MarkerOptions()
+        //        .position(norrkoping).title("Norrköping")
+        //        .draggable(true)
+        //        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(norrkoping, 14.5f));
 
         // Read the position of the marker
@@ -267,14 +293,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new LatLng(58.5970857365086, 16.19432793490285));   // North east corner
 
         // Visualize the boundary on the map
-        Polyline line = map.addPolyline(new PolylineOptions()
+        Polyline bounds = map.addPolyline(new PolylineOptions()
                 .add(new LatLng(58.58497423248923, 16.169788531387145))
                 .add(new LatLng(58.58497423248923, 16.19432793490285))
                 .add(new LatLng(58.5970857365086, 16.19432793490285))
                 .add(new LatLng(58.5970857365086, 16.169788531387145))
                 .add(new LatLng(58.58497423248923, 16.169788531387145)));
-        line.setWidth(10.0f);
-        line.setColor(Color.argb(255,0,0,0));
+        bounds.setWidth(10.0f);
+        bounds.setColor(Color.argb(255,0,0,0));
 
         // Change the style of the map to remove icons of interest
         try {
@@ -314,6 +340,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ttSlider.setStepSize(1f);
         ttSlider.setMinSeparation(1f);
         ttSlider.setMinSeparationValue(1f);
+
+        //TODO: Add sliders for noise and temperature
     }
 
     // Get nodes from database and put them in the local database
@@ -353,6 +381,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String ttelev[] = getData("ttelev").split(";");
         String ttwcpq[] = getData("ttwcpq").split(";");
 
+        //TODO: Implement temperature and noise
+
         for (int i = 0; i < links.length; i++) {
             String li1[] = links[i].split("-");
             String ai1[] = air[i].split("-");
@@ -378,11 +408,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             link.ttcycle = Double.parseDouble(tc2[2]);
             link.ttelev = Double.parseDouble(te1[2]);
             link.ttwc = Double.parseDouble(tw1[2]);
+            link.noise = 0.5; //TODO: Change
+            link.temp = 19.5;
 
             //Log.d("MainActivity",link.toString());
             linkDao.insertLink(link);
         }
         Toast.makeText(MainActivity.this, "Got links!", Toast.LENGTH_SHORT).show();
+
+        displayLinks();
     }
 
     // Transmit data between database and local unit
@@ -500,11 +534,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    // Create a route to the marker form the users position if they are inside the boundary
+    // Create a route to the marker from the users position if they are inside the boundary
     private void makeRoute(Location location) {
         LatLng currP = new LatLng(location.getLatitude(),location.getLongitude());
         Log.d("MainActivity",location.toString());
-        LatLng markP = marker.getPosition();
+        //LatLng markSP = markerStart.getPosition();
+        LatLng markEP = marker.getPosition();
         int currPi = 0;
         int markPi = 0;
 
@@ -527,25 +562,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         OptPlan theOP = new OptPlan();
         theOP.createPlan(mode, pace, elev, air, tt);
 
-        if (norrkopingBounds.contains(currP) && norrkopingBounds.contains(markP)) {
+        if (norrkopingBounds.contains(currP) && norrkopingBounds.contains(markEP)) {
             Toast.makeText(MainActivity.this, "Making route", Toast.LENGTH_SHORT).show();
             currPi = getMin(currP.latitude,currP.longitude);
             //currPi = 101;
             Log.d("MainActivity",nodeDao.getNode(currPi).toString());
-            markPi = getMin(markP.latitude,markP.longitude);
+            markPi = getMin(markEP.latitude,markEP.longitude);
             //markPi = 65;
             Log.d("MainActivity",nodeDao.getNode(markPi).toString());
-            String path = theOP.getPath(currPi,markPi);
+            path = theOP.getPath(currPi,markPi);
 
             Log.d("MainActivity",path);
-            Intent intent = new Intent(this, MapsActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, path);
-            startActivity(intent);
+            //Intent intent = new Intent(this, MapsActivity.class);
+            //intent.putExtra(EXTRA_MESSAGE, path);
+            //startActivity(intent);
+            displayPath();
         } else {
             if (!norrkopingBounds.contains(currP)) {
                 Toast.makeText(MainActivity.this, getString(R.string.currOut), Toast.LENGTH_SHORT).show();
             }
-            if (!norrkopingBounds.contains(markP)) {
+            if (!norrkopingBounds.contains(markEP)) {
                 Toast.makeText(MainActivity.this, getString(R.string.markOut), Toast.LENGTH_SHORT).show();
             }
         }
@@ -588,5 +624,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         double dist = R * c * 1000; // Converts to meters
 
         return dist;
+    }
+
+    private void displayPath() {
+        String nID[] = path.split("->");
+        ArrayList<LatLng> nC = new ArrayList<>();
+
+        for (int i=0; i<nID.length; i++) {
+            Node node = nodeDao.getNode(Integer.parseInt(nID[i].trim()));
+            nC.add(new LatLng(node.lat,node.lng));
+        }
+
+        if (line != null) {
+            line.remove();
+        }
+
+        line = map.addPolyline(new PolylineOptions().addAll(nC));
+        line.setWidth(10.0f);
+        line.setStartCap(new RoundCap());
+        line.setEndCap(new SquareCap());
+        line.setColor(Color.argb(255,0,0,0));
+    }
+
+    private void displayLinks() {
+        List<Link> links = linkDao.getAllLinks();
+
+        for (int i=0; i<links.size(); i++) {
+            int s = links.get(i).source;
+            int d = links.get(i).destination;
+
+            Node tS = nodeDao.getNode(s);
+            Node tD = nodeDao.getNode(d);
+
+            Polyline grid = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(tS.lat, tS.lng))
+                    .add(new LatLng(tD.lat, tD.lng)));
+            grid.setWidth(10.0f);
+            grid.setColor(Color.argb(25,0,0,0));
+        }
     }
 }

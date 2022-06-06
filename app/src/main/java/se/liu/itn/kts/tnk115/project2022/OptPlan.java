@@ -18,6 +18,7 @@ public class OptPlan {
     private double cost;
     private double minDist, maxDist, minAir, maxAir, minPave, maxPave, minElev, maxElev, minTT, maxTT;
     private double paveNorm, elevNorm, airNorm, distNorm, ttNorm;
+    private double minTemp, maxTemp, tempNorm, minNoise, maxNoise, noiseNorm;
 
     public OptPlan() {
         this.nodeList = null;
@@ -42,7 +43,7 @@ public class OptPlan {
             for (int i=0; i<linkList.size(); i++) {
                 cost = (double)linkList.get(i).dist;
 
-                Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
+                //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 
                 Edge arc = new Edge("c"+i,nodes.get(linkList.get(i).source-1),nodes.get(linkList.get(i).destination-1),cost);
                 edges.add(arc);
@@ -58,6 +59,12 @@ public class OptPlan {
             minAir = (double)MainActivity.linkDao.getMinAir();
             maxAir = (double)MainActivity.linkDao.getMaxAir();
             Log.d("OptPlan","Air: "+minAir+" "+maxAir);
+            minTemp = (double)MainActivity.linkDao.getMinTemp();
+            maxTemp = (double)MainActivity.linkDao.getMaxTemp();
+            Log.d("OptPlan","Temp: "+minTemp+" "+maxTemp);
+            minNoise = (double)MainActivity.linkDao.getMinNoise();
+            maxNoise = (double)MainActivity.linkDao.getMaxNoise();
+            Log.d("OptPlan","Noise: "+minNoise+" "+maxNoise);
 
             if (mode == 1) {
                 minPave = (double)MainActivity.linkDao.getMinPed();
@@ -101,10 +108,20 @@ public class OptPlan {
                 airNorm = ((double)linkList.get(i).air-minAir)/(maxAir-minAir);
                 distNorm = ((double)linkList.get(i).dist-minDist)/(maxDist-minDist);
                 ttNorm = ((double)tt.get(i)-minTT)/(maxTT-minTT);
+                if (minTemp == maxTemp) {
+                    tempNorm = 1.0;
+                } else {
+                    tempNorm = (linkList.get(i).temp-minTemp)/(maxTemp-minTemp);
+                }
+                if (minNoise == maxNoise) {
+                    noiseNorm = 1;
+                } else {
+                    noiseNorm = (linkList.get(i).noise - minNoise) / (maxNoise - minNoise);
+                }
 
                 cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate)*distNorm+ttNorm*ttRate);
 
-                Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
+                //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 
                 Edge arc = new Edge("c"+i,nodes.get(linkList.get(i).source-1),nodes.get(linkList.get(i).destination-1),cost);
                 edges.add(arc);

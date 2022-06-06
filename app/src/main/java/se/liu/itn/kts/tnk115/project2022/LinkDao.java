@@ -14,7 +14,7 @@ public interface LinkDao {
     List<Link> getAllLinks();
 
     @Query("SELECT * FROM link WHERE source = :s AND destination = :d")
-    public Link getNode(int s, int d);
+    public Link getLink(int s, int d);
 
     @Query("SELECT distance FROM link ORDER BY distance DESC LIMIT 1")
     public int getMaxDist();
@@ -51,6 +51,18 @@ public interface LinkDao {
 
     @Query("SELECT wcpavequality FROM link ORDER BY wcpavequality ASC LIMIT 1")
     public int getMinWC();
+
+    @Query("SELECT temperature FROM link ORDER BY temperature DESC LIMIT 1")
+    public double getMaxTemp();
+
+    @Query("SELECT temperature FROM link ORDER BY temperature ASC LIMIT 1")
+    public double getMinTemp();
+
+    @Query("SELECT noise FROM link ORDER BY noise DESC LIMIT 1")
+    public double getMaxNoise();
+
+    @Query("SELECT noise FROM link ORDER BY noise ASC LIMIT 1")
+    public double getMinNoise();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertAllLinks(Link... link);
