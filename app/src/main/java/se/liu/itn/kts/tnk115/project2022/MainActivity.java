@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker marker;
     //private Marker markerStart;
     private LatLngBounds norrkopingBounds;
-    private int mode = 0;
+    private int mode = 1; // Transportation mode
     private String path = "";
     private Intent updateIntent;
 
@@ -143,11 +143,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         getLastKnownLocation();
                     }
                 } else {
-                    // Ask the user for location permission
+                    // Ask the user for read phone permission
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
                         requestReadPermission();
                     }
-                    // Ask the user for read phone permission
+                    // Ask the user for location permission
                     if (ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
                         requestLocationPermission();
                     }
@@ -160,16 +160,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (path != null) {
-                    updateIntent.putExtra(EXTRA_MESSAGE, path);
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    if (path != null) {
+                        updateIntent.putExtra(EXTRA_MESSAGE, path);
+                    } else {
+                        updateIntent.putExtra(EXTRA_MESSAGE,"");
+                    }
+                    startActivity(updateIntent);
                 } else {
-                    updateIntent.putExtra(EXTRA_MESSAGE,"");
+                    // Ask the user for location permission
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                        requestLocationPermission();
+                    }
                 }
-                startActivity(updateIntent);
             }
         });
 
-        //TODO: Remove option to change mode
+        /*//TODO: Remove option to change mode
         // Update which mode the user has selected
         Spinner modeSpinner = (Spinner) findViewById(R.id.mode_spinner);
         modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -182,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
     }
 
     // Request of location permission
@@ -313,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Configure sliders to be discrete and from 0 to 10
     private void configureSliders() {
-        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pace_bar);
+        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pave_bar);
         paceSlider.setValueFrom(0);
         paceSlider.setValueTo(10);
         paceSlider.setStepSize(1f);
@@ -341,7 +348,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ttSlider.setMinSeparation(1f);
         ttSlider.setMinSeparationValue(1f);
 
-        //TODO: Add sliders for noise and temperature
+        RangeSlider tempSlider = (RangeSlider) findViewById(R.id.temp_bar);
+        tempSlider.setValueFrom(0);
+        tempSlider.setValueTo(10);
+        tempSlider.setStepSize(1f);
+        tempSlider.setMinSeparation(1f);
+        tempSlider.setMinSeparationValue(1f);
+
+        RangeSlider noiseSlider = (RangeSlider) findViewById(R.id.noise_bar);
+        noiseSlider.setValueFrom(0);
+        noiseSlider.setValueTo(10);
+        noiseSlider.setStepSize(1f);
+        noiseSlider.setMinSeparation(1f);
+        noiseSlider.setMinSeparationValue(1f);
     }
 
     // Get nodes from database and put them in the local database
@@ -404,14 +423,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             link.pave = Integer.parseInt(pa1[2]);
             link.pedp = Integer.parseInt(pe1[2]);
             link.wcpave = Integer.parseInt(wc1[2]);
-            link.ttcog = Double.parseDouble(tc1[2]);
+            link.ttcong = Double.parseDouble(tc1[2]);
             link.ttcycle = Double.parseDouble(tc2[2]);
             link.ttelev = Double.parseDouble(te1[2]);
-            link.ttwc = Double.parseDouble(tw1[2]);
+            if (0.01 > Double.parseDouble(tw1[2])) {
+                link.ttwc = 0.001;
+            } else {
+                link.ttwc = Double.parseDouble(tw1[2]);
+            }
             link.noise = 0.5; //TODO: Change
             link.temp = 19.5;
 
-            //Log.d("MainActivity",link.toString());
+            Log.d("MainActivity",link.toString());
             linkDao.insertLink(link);
         }
         Toast.makeText(MainActivity.this, "Got links!", Toast.LENGTH_SHORT).show();
@@ -544,7 +567,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int markPi = 0;
 
         // Get all the weights
-        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pace_bar);
+        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pave_bar);
         List<Float> paceValues = paceSlider.getValues();
         double pace = paceValues.get(0);
         RangeSlider elevSlider = (RangeSlider) findViewById(R.id.elev_bar);
@@ -556,11 +579,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         RangeSlider ttSlider = (RangeSlider) findViewById(R.id.tt_bar);
         List<Float> ttValues = ttSlider.getValues();
         double tt = ttValues.get(0);
+        RangeSlider tempSlider = (RangeSlider) findViewById(R.id.temp_bar);
+        List<Float> tempValues = ttSlider.getValues();
+        double temp = tempValues.get(0);
+        RangeSlider noiseSlider = (RangeSlider) findViewById(R.id.noise_bar);
+        List<Float> noiseValues = ttSlider.getValues();
+        double noise = ttValues.get(0);
 
-        Log.d("MainActivity","Mode: "+mode+" Pace: "+pace+" Elev: "+elev+" Air: "+air+" TT: "+tt);
+        Log.d("MainActivity","Mode: "+mode+" Pace: "+pace+" Elev: "+elev+" Air: "+air+" TT: "+tt+" Temp: "+temp+" Noise: "+noise);
 
         OptPlan theOP = new OptPlan();
-        theOP.createPlan(mode, pace, elev, air, tt);
+        theOP.createPlan(mode, pace, elev, air, tt, temp, noise);
 
         if (norrkopingBounds.contains(currP) && norrkopingBounds.contains(markEP)) {
             Toast.makeText(MainActivity.this, "Making route", Toast.LENGTH_SHORT).show();

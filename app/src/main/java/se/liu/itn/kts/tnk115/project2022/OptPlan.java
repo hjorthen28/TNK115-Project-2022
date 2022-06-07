@@ -26,7 +26,7 @@ public class OptPlan {
     }
 
     // Creating links and nodes
-    public void createPlan(int mode, double paveRate, double elevRate, double airRate, double ttRate) {
+    public void createPlan(int mode, double paveRate, double elevRate, double airRate, double ttRate, double tempRate, double noiseRate) {
         this.nodeList = MainActivity.nodeDao.getAllNodes();
         this.linkList = MainActivity.linkDao.getAllLinks();
         nodes = new ArrayList<Vertex>();
@@ -64,7 +64,7 @@ public class OptPlan {
             Log.d("OptPlan","Temp: "+minTemp+" "+maxTemp);
             minNoise = (double)MainActivity.linkDao.getMinNoise();
             maxNoise = (double)MainActivity.linkDao.getMaxNoise();
-            Log.d("OptPlan","Noise: "+minNoise+" "+maxNoise);
+            Log.d("OptPlan","Noise: "+minNoise+", "+maxNoise);
 
             if (mode == 1) {
                 minPave = (double)MainActivity.linkDao.getMinPed();
@@ -82,11 +82,11 @@ public class OptPlan {
             for (int i=0; i<linkList.size(); i++) {
                 double value = 0.0;
                 if (mode == 1) {
-                    value = (double)(((double)linkList.get(i).dist) / (1.5*linkList.get(i).ttcog*linkList.get(i).ttelev));
+                    value = (double)(((double)linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
                 } else if (mode == 2) {
-                    value = (double)(((double)linkList.get(i).dist) / (1.2*linkList.get(i).ttcog*linkList.get(i).ttelev*linkList.get(i).ttwc));
+                    value = (double)(((double)linkList.get(i).dist) / (1.2*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttwc));
                 } else {
-                    value = (double)(((double)linkList.get(i).dist) / (5.5*linkList.get(i).ttcog*linkList.get(i).ttelev*linkList.get(i).ttcycle));
+                    value = (double)(((double)linkList.get(i).dist) / (5.5*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttcycle));
                 }
                 if (value >= maxTT) maxTT = value;
                 if (value <= minTT) minTT = value;
@@ -119,7 +119,7 @@ public class OptPlan {
                     noiseNorm = (linkList.get(i).noise - minNoise) / (maxNoise - minNoise);
                 }
 
-                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate)*distNorm+ttNorm*ttRate);
+                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate+noiseNorm*noiseRate+tempNorm*tempRate)*distNorm+ttNorm*ttRate);
 
                 //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 

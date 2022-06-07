@@ -20,8 +20,8 @@ public class Link {
     public int pedp;
     @ColumnInfo(name = "wcpavequality")
     public int wcpave;
-    @ColumnInfo(name = "ttcog")
-    public double ttcog;
+    @ColumnInfo(name = "ttcong")
+    public double ttcong;
     @ColumnInfo(name = "ttcyclepqcoeff")
     public double ttcycle;
     @ColumnInfo(name = "ttelevcoeff")
@@ -34,6 +34,9 @@ public class Link {
     public double noise;
 
     public String toString() {
-        return "Source:"+source+" Destination:"+destination+" Distance"+dist;
+        String result = "S:"+source+" D:"+destination+" Dist:"+dist;
+        result = result + " Elev:"+elev+" Air:"+air+" Pave:"+pave+" PedP:"+pedp+" WcP:"+wcpave;
+        result = result + " TTCo:"+ttcong+" TTCy:"+ttcycle+" TTEl:"+ttelev+" TTWC:"+ttwc+" Temp:"+temp+" Noise:"+noise;
+        return result;
     }
 }
