@@ -121,6 +121,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         if (!path.equals("")) {
             displayPath();
         }
+        configureSliders();
     }
 
     private void displayPath() {
@@ -130,9 +131,6 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         for (int i=0; i<nID.length; i++) {
             Node node = MainActivity.nodeDao.getNode(Integer.parseInt(nID[i].trim()));
             nC.add(new LatLng(node.lat,node.lng));
-            //if (i == nID.length-1) {
-            //    map.moveCamera(CameraUpdateFactory.newLatLngZoom(nC.get(i), 14.5f));
-            //}
         }
 
         Polyline line = uMap.addPolyline(new PolylineOptions().addAll(nC));
@@ -144,45 +142,51 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
     //TODO: Update with correct sliders
     private void configureSliders() {
-        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pace_bar);
+        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pave_uBar);
         paceSlider.setValueFrom(0);
         paceSlider.setValueTo(10);
         paceSlider.setStepSize(1f);
         paceSlider.setMinSeparation(1f);
         paceSlider.setMinSeparationValue(1f);
 
-        RangeSlider elevSlider = (RangeSlider) findViewById(R.id.elev_bar);
-        elevSlider.setValueFrom(0);
-        elevSlider.setValueTo(10);
-        elevSlider.setStepSize(1f);
-        elevSlider.setMinSeparation(1f);
-        elevSlider.setMinSeparationValue(1f);
-
-        RangeSlider airSlider = (RangeSlider) findViewById(R.id.air_bar);
+        RangeSlider airSlider = (RangeSlider) findViewById(R.id.air_uBar);
         airSlider.setValueFrom(0);
         airSlider.setValueTo(10);
         airSlider.setStepSize(1f);
         airSlider.setMinSeparation(1f);
         airSlider.setMinSeparationValue(1f);
 
-        RangeSlider ttSlider = (RangeSlider) findViewById(R.id.tt_bar);
-        ttSlider.setValueFrom(0);
-        ttSlider.setValueTo(10);
-        ttSlider.setStepSize(1f);
-        ttSlider.setMinSeparation(1f);
-        ttSlider.setMinSeparationValue(1f);
+        RangeSlider tempSlider = (RangeSlider) findViewById(R.id.temp_uBar);
+        tempSlider.setValueFrom(0);
+        tempSlider.setValueTo(10);
+        tempSlider.setStepSize(1f);
+        tempSlider.setMinSeparation(1f);
+        tempSlider.setMinSeparationValue(1f);
+
+        RangeSlider noiseSlider = (RangeSlider) findViewById(R.id.noise_uBar);
+        noiseSlider.setValueFrom(0);
+        noiseSlider.setValueTo(1);
+        noiseSlider.setStepSize(0.05f);
+        noiseSlider.setMinSeparation(0.05f);
+        noiseSlider.setMinSeparationValue(0.05f);
+
+        RangeSlider overallSlider = (RangeSlider) findViewById(R.id.overall_uBar);
+        overallSlider.setValueFrom(0);
+        overallSlider.setValueTo(10);
+        overallSlider.setStepSize(1f);
+        overallSlider.setMinSeparation(1f);
+        overallSlider.setMinSeparationValue(1f);
     }
 
     //TODO: Implement updating of values
     private void updateValues() {
-        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pace_bar);
+        RangeSlider paceSlider = (RangeSlider) findViewById(R.id.pave_bar);
         List<Float> paceValues = paceSlider.getValues();
         double pace = paceValues.get(0);
     }
 
     protected void startCollecting() {
-
-        Log.d("MainActivity", "Starting to request location updates.");
+        Log.d("UpdateActivity", "Starting to request location updates.");
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -191,8 +195,11 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
                 for (Location location : locationResult.getLocations()) {
                     Log.d("MainActivity", "Updating GUI with current location.");
-                    //TODO: Add code
-                    activeLink(location);
+                    if (path.equals("") || path == null) {
+                        stopCollecting();
+                    } else {
+                        activeLink(location);
+                    }
                 }
             }
         };
@@ -212,14 +219,16 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     protected void stopCollecting() {
-        fusedLocationClient.removeLocationUpdates(locationCallback);
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
     }
 
     protected LocationRequest createLocationRequest() {
         Log.d("MainActivity", "Creating LocationRequest");
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(20 * 1000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setFastestInterval(10 * 1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         return locationRequest;
@@ -229,6 +238,8 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         double min = Double.MAX_VALUE;
         double lat = location.getLatitude();
         double lng = location.getLongitude();
+        double latA = lat;
+        double lngA = lng;
 
         String nID[] = path.split("->");
 
@@ -250,6 +261,8 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
                 min = dist;
                 source = Integer.parseInt(nID[i].trim());
                 destination = Integer.parseInt(nID[i+1].trim());
+                latA = latN;
+                lngA = lngN;
             }
         }
         if (activeLink != null) {
@@ -264,6 +277,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         activeLink.setColor(Color.argb(255,0,255,0));
 
         Log.d("UpdateActivity","Closest link between node: "+source+" & "+destination);
+        uMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latA,lngA), 17.5f));
     }
 
     private double distance(double lat1, double lat2, double lng1, double lng2) {
