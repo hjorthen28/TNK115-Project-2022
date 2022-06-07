@@ -137,6 +137,147 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/pave_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/temp_uBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uMap"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/pave_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/pave"
+        app:layout_constraintBottom_toTopOf="@+id/pave_uBar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/temp_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/elev_uBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pave_uBar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/temp_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/temp"
+        app:layout_constraintBottom_toTopOf="@+id/temp_uBar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/elev_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUpdate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temp_uBar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/elev_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/elev"
+        app:layout_constraintBottom_toTopOf="@+id/elev_uBar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/air_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/noise_uBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uMap" />
+
+    <TextView
+        android:id="@+id/air_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/air"
+        app:layout_constraintBottom_toTopOf="@+id/air_uBar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/noise_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/tt_uBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/air_uBar" />
+
+    <TextView
+        android:id="@+id/noise_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/noise"
+        app:layout_constraintBottom_toTopOf="@+id/noise_uBar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/tt_uBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="140dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUpdate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noise_uBar" />
+
+    <TextView
+        android:id="@+id/tt_uText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/tt"
+        app:layout_constraintBottom_toTopOf="@+id/tt_uBar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/buttonUpdate"
         android:layout_width="0dp"
