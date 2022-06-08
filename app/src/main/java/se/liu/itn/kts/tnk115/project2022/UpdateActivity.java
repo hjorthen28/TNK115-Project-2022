@@ -190,17 +190,23 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             noise = 0.0;
         } else {
             Link activeLink = MainActivity.linkDao.getLink(source,destination);
+            pave = activeLink.pedp;
+            air = activeLink.air;
+            temp = activeLink.temp;
+            noise = activeLink.noise;
 
-            pave = 1.0-norm(activeLink.pedp, MainActivity.linkDao.getMaxPed(), MainActivity.linkDao.getMinPed());
+            Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
+
+            pave = 1.0-norm(pave, MainActivity.linkDao.getMaxPed(), MainActivity.linkDao.getMinPed());
             paveSlider.setValues((float)pave);
 
-            air = 1.0-norm(activeLink.air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
+            air = 1.0-norm(air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
             airSlider.setValues((float)air);
 
-            temp = 1.0-norm(activeLink.temp, MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
+            temp = 1.0-norm(temp, MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
             tempSlider.setValues((float)temp);
 
-            noise = 1.0-activeLink.noise;
+            noise = 1.0-noise;
             noiseSlider.setValues((float)noise);
 
             Log.d("UpdateActivity","Link: "+source+"->"+destination+" P"+activeLink.pave+" A"+activeLink.air+" T"+activeLink.temp+" N"+activeLink.noise);
@@ -249,7 +255,14 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         Log.d("UpdateActivity","Values: Link: "+source+"->"+destination+String.format(" P:%.2f",pV)+String.format(" A:%.2f",aV)+String.format(" T:%.2f",tV)+String.format(" N:%.2f",nV)+String.format(" O:%.0f",overall));
         Log.d("UpdateActivity","After:  Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise)+String.format(" O:%.0f",overall));
 
-        getLastKnownLocation();
+        pave = reverseNorm((1.0-pave), MainActivity.linkDao.getMaxPed(), MainActivity.linkDao.getMinPed());
+        air = reverseNorm((1.0-air), MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
+        temp = reverseNorm((1.0-temp), MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
+        noise = 1.0-noise;
+
+        Log.d("UpdateActivity","New values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
+
+        //getLastKnownLocation();
     }
 
     protected void startCollecting() {
@@ -412,7 +425,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
         JSONObject message = new JSONObject();
         try {
-            message.put("message_type", "project2022");
+            message.put("message_type", "project2022update");
             message.put("imei",IMEI);
             message.put("origin",source);
             message.put("destination",destination);
@@ -504,7 +517,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private double reverseNorm(double value, double max, double min) {
-        return value*(max-min);
+        return value*(max-min)+min;
     }
 
     private double newValue(double nV, double cV) {

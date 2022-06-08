@@ -17,4 +17,9 @@
     <color name="Lgrey">#FFDBE2EF</color>
     <color name="Llblue">#FF3F72AF</color>
     <color name="Ldblue">#FF112D4E</color>
+
+    <color name="L_I">#FFF1FAEE</color>
+    <color name="L_II">#FFA8DADC</color>
+    <color name="L_III">#FF457B8D</color>
+    <color name="L_IV">#FF1D3557</color>
 </resources>

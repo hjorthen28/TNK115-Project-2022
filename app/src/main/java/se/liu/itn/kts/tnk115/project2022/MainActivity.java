@@ -142,11 +142,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // Get nodes and links from external database
                     Log.d("MainActivity", "GetData Button clicked");
                     getNodes();
-                    Log.d("MainActivity", "Nodes read");
+                    Log.d("MainActivity", "Got nodes from DB");
                     getLinks();
-                    Log.d("MainActivity", "Links read");
+                    Log.d("MainActivity", "Got links from DB");
                     data = true;
-                    displayLinks();
+
                     map.setMyLocationEnabled(true);
                 } else {
                     // Ask the user for read phone permission
@@ -338,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             map.setMyLocationEnabled(true);
         }
 
-        if (data) displayLinks();
         if (path != null) displayPath();
     }
 
@@ -425,6 +424,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Get nodes from database and put them in the local database
     private void getNodes() {
+        nodeDao.deleteAllNodes();
         String nodes = getData("nodes");
         if (nodes == null) {
             while (nodes == null) {
@@ -443,12 +443,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             nodeDao.insertNode(node);
         }
-        Log.d("MainActivity", "#" + nodesSplit.length + " nodes inserted");
+        Log.d("MainActivity", nodesSplit.length + " nodes read from database");
+        Log.d("MainActivity","# of nodes in the local database: "+nodeDao.getLength());
         Toast.makeText(MainActivity.this, "Got nodes", Toast.LENGTH_SHORT).show();
     }
 
     // Get link data from database and put them in local database
     private void getLinks() {
+        linkDao.deleteAllLinks();
         String links[] = getData("links").split(";");
         String air[] = getData("air").split(";");
         String elev[] = getData("elev").split(";");
@@ -511,6 +513,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             //Log.d("MainActivity",link.toString());
             linkDao.insertLink(link);
         }
+
+        Log.d("MainActivity", links.length + " links read from database");
+        Log.d("MainActivity","Number of links in the local database: "+linkDao.getLength());
         Toast.makeText(MainActivity.this, "Got links!", Toast.LENGTH_SHORT).show();
     }
 
@@ -733,25 +738,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         line.setStartCap(new RoundCap());
         line.setEndCap(new SquareCap());
         line.setColor(Color.argb(255,0,0,0));
-    }
-
-    private void displayLinks() {
-        List<Link> links = linkDao.getAllLinks();
-
-        if (grid != null) grid.remove();
-
-        for (int i=0; i<links.size(); i++) {
-            int s = links.get(i).source;
-            int d = links.get(i).destination;
-
-            Node tS = nodeDao.getNode(s);
-            Node tD = nodeDao.getNode(d);
-
-            grid = map.addPolyline(new PolylineOptions()
-                    .add(new LatLng(tS.lat, tS.lng))
-                    .add(new LatLng(tD.lat, tD.lng)));
-            grid.setWidth(10.0f);
-            grid.setColor(Color.argb(25,0,0,0));
-        }
     }
 }
