@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TNK115 - Projekt 2022</string>
+    <string name="button">Hämta data</string>
+    <string name="buttonUpdate">Uppdatera värden</string>
+    <string name="update">Uppdatera data</string>
+    <string name="bike">Cykel</string>
+    <string name="walk">Gång</string>
+    <string name="reduced">Reducerad</string>
+    <string name="currOut">Du är utanför området!</string>
+    <string name="markOut">Markören är utanför området!</string>
+    <string name="pave">Vägkvalitet</string>
+    <string name="elev">Lutning</string>
+    <string name="air">Luftkvalitet</string>
+    <string name="tt">Restid</string>
+    <string name="noise">Ljudnivå</string>
+    <string name="temp">Temperatur</string>
+    <string name="overall">Generell känsla</string>
+    <string name="linkInfo">Nuvarande värden:</string>
+    <string name="linkPave">Vägkvalitet:</string>
+    <string name="linkTemp">Temperatur:</string>
+    <string name="linkAir">Luftkvalitet:</string>
+    <string name="linkNoise">Ljudnivå:</string>
+</resources>
