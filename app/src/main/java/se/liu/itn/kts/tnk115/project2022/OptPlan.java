@@ -55,16 +55,18 @@ public class OptPlan {
             maxDist = MainActivity.linkDao.getMaxDist();
             Log.d("OptPlan","Dist: "+minDist+" "+maxDist);
 
-            if (mode == 1) {
+            /*if (mode == 1) {
                 minPave = MainActivity.linkDao.getMinPed();
                 maxPave = MainActivity.linkDao.getMaxPed();
             } else if (mode == 2) {
                 minPave = MainActivity.linkDao.getMinWC();
                 maxPave = MainActivity.linkDao.getMaxWC();
             } else {
-                minPave = MainActivity.linkDao.getMinPave();
-                maxPave = MainActivity.linkDao.getMaxPave();
-            }
+                minPave = MainActivity.linkDao.getMinBike();
+                maxPave = MainActivity.linkDao.getMaxBike();
+            }*/
+            minPave = MainActivity.linkDao.getMinPave();
+            maxPave = MainActivity.linkDao.getMaxPave();
             Log.d("OptPlan","Pave: "+minPave+" "+maxPave);
 
             minElev = MainActivity.linkDao.getMinElev();
@@ -84,13 +86,14 @@ public class OptPlan {
             maxTT = Double.MIN_VALUE;
             for (int i=0; i<linkList.size(); i++) {
                 double value = 0.0;
-                if (mode == 1) {
-                    value = (double)(((double)linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
+                /*if (mode == 1) {
+                    value = ((linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
                 } else if (mode == 2) {
-                    value = (double)(((double)linkList.get(i).dist) / (1.2*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttwc));
+                    value = ((linkList.get(i).dist) / (1.2*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttwc));
                 } else {
-                    value = (double)(((double)linkList.get(i).dist) / (5.5*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttcycle));
-                }
+                    value = ((linkList.get(i).dist) / (5.5*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttcycle));
+                }*/
+                value = ((linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
                 if (value >= maxTT) maxTT = value;
                 if (value <= minTT) minTT = value;
                 tt.add(value);
@@ -99,14 +102,15 @@ public class OptPlan {
             Log.d("OptPlan","TT: "+minTT+" "+maxTT);
 
             for (int i=0; i<linkList.size(); i++) {
-                if (mode == 1) paveNorm = norm(linkList.get(i).pedp,maxPave,minPave);
+                /*if (mode == 1) paveNorm = norm(linkList.get(i).pedp,maxPave,minPave);
                 else if (mode == 2) paveNorm = norm(linkList.get(i).wcpave,maxPave,minPave);
-                else paveNorm = norm(linkList.get(i).pave,maxPave,minPave);
+                else paveNorm = norm(linkList.get(i).bikep,maxPave,minPave);*/
 
+                paveNorm = norm(linkList.get(i).pave,maxPave,minPave);
                 elevNorm = norm(linkList.get(i).elev,maxElev,minElev);
                 airNorm = norm(linkList.get(i).air,maxAir,minAir);
                 distNorm = norm(linkList.get(i).dist,maxDist,minDist);
-                ttNorm = norm(linkList.get(i).elev,maxTT,minTT);
+                ttNorm = norm(tt.get(i),maxTT,minTT);
                 tempNorm = norm(linkList.get(i).temp,maxTemp,minTemp);
                 noiseNorm = norm(linkList.get(i).noise,maxNoise,minNoise);
 
@@ -140,7 +144,8 @@ public class OptPlan {
     }
 
     private double norm(double value, double max, double min) {
-        if (max != min) return ((value-min)/(max-min));
+        if (value > max && value == 1000.0) return 1000;
+        else if (max != min) return ((value-min)/(max-min));
         else return 1.0;
     }
 

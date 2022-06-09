@@ -7,6 +7,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 @Dao
 public interface LinkDao {
@@ -37,11 +38,17 @@ public interface LinkDao {
     @Query("SELECT elevationcategorized FROM link ORDER BY elevationcategorized ASC LIMIT 1")
     public double getMinElev();
 
-    @Query("SELECT pavementquality FROM link ORDER BY pavementquality DESC LIMIT 1")
+    @Query("SELECT pavementquality FROM link WHERE pavementquality < 1000 ORDER BY pavementquality DESC LIMIT 1")
     public double getMaxPave();
 
     @Query("SELECT pavementquality FROM link ORDER BY pavementquality ASC LIMIT 1")
     public double getMinPave();
+
+    @Query("SELECT bikepavequality FROM link ORDER BY bikepavequality DESC LIMIT 1")
+    public double getMaxBike();
+
+    @Query("SELECT bikepavequality FROM link ORDER BY bikepavequality ASC LIMIT 1")
+    public double getMinBike();
 
     @Query("SELECT pedpavequality FROM link ORDER BY pedpavequality DESC LIMIT 1")
     public double getMaxPed();
@@ -49,7 +56,7 @@ public interface LinkDao {
     @Query("SELECT pedpavequality FROM link ORDER BY pedpavequality ASC LIMIT 1")
     public double getMinPed();
 
-    @Query("SELECT wcpavequality FROM link ORDER BY wcpavequality DESC LIMIT 1")
+    @Query("SELECT wcpavequality FROM link WHERE wcpavequality < 1000 ORDER BY wcpavequality DESC LIMIT 1")
     public double getMaxWC();
 
     @Query("SELECT wcpavequality FROM link ORDER BY wcpavequality ASC LIMIT 1")
@@ -72,6 +79,9 @@ public interface LinkDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertLink(Link link);
+
+    @Update
+    public void updateLink(Link link);
 
     @Delete
     public void deleteAllLinks(Link... link);

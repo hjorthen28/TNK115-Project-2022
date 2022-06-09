@@ -20,4 +20,5 @@
     <string name="linkTemp">Temperature:</string>
     <string name="linkAir">Air quality:</string>
     <string name="linkNoise">Noise:</string>
+    <string name="stairs">Stairs</string>
 </resources>

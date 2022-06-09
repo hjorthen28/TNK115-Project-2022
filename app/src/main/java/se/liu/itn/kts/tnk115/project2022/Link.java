@@ -16,6 +16,8 @@ public class Link {
     public double elev;
     @ColumnInfo(name = "pavementquality")
     public double pave;
+    @ColumnInfo(name = "bikepavequality")
+    public double bikep;
     @ColumnInfo(name = "pedpavequality")
     public double pedp;
     @ColumnInfo(name = "wcpavequality")

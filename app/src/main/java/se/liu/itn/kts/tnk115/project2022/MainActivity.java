@@ -27,8 +27,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String address = "130.236.81.13";
     private int port = 8718;
     private GoogleMap map = null;
-    private Polyline line, grid;
+    private Polyline line;
     private Marker marker;
     //private Marker markerStart;
     private LatLngBounds norrkopingBounds;
@@ -146,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     getLinks();
                     Log.d("MainActivity", "Got links from DB");
                     data = true;
-
                     map.setMyLocationEnabled(true);
                 } else {
                     // Ask the user for read phone permission
@@ -182,20 +183,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        /*//TODO: Remove option to change mode
-        // Update which mode the user has selected
-        Spinner modeSpinner = (Spinner) findViewById(R.id.mode_spinner);
-        modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Switch stairs = (Switch) findViewById(R.id.switchStairs);
+        stairs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mode = position;
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mode = 2;
+                } else {
+                    mode = 1;
+                }
+                if (data) getLastKnownLocation();
+                Log.d("MainActivity","Mode change: "+mode);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
+        });
     }
 
     // Request of location permission
@@ -424,7 +424,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Get nodes from database and put them in the local database
     private void getNodes() {
-        nodeDao.deleteAllNodes();
         String nodes = getData("nodes");
         if (nodes == null) {
             while (nodes == null) {
@@ -450,7 +449,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Get link data from database and put them in local database
     private void getLinks() {
-        linkDao.deleteAllLinks();
         String links[] = getData("links").split(";");
         String air[] = getData("air").split(";");
         String elev[] = getData("elev").split(";");
@@ -480,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             String pa1[] = pave[i].split("-");
             link.pave = Double.parseDouble(pa1[2]);
+            link.bikep  = link.pave;
 
             String pe1[] = pedq[i].split("-");
             link.pedp = Double.parseDouble(pe1[2]);
@@ -658,6 +657,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.d("MainActivity","Mode: "+mode+" Pave: "+pave+" Elev: "+elev+" Air: "+air+" TT: "+tt+" Temp: "+temp+" Noise: "+noise);
 
+        updatePave();
+
         OptPlan theOP = new OptPlan();
         theOP.createPlan(mode, pave, elev, air, tt, temp, noise);
 
@@ -739,4 +740,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         line.setEndCap(new SquareCap());
         line.setColor(Color.argb(255,0,0,0));
     }
+
+    private void updatePave() {
+        List<Link> links = linkDao.getAllLinks();
+
+        for (int i=0; i<links.size(); i++) {
+            Link link = links.get(i);
+
+            if (mode == 1) {
+                link.pave = (link.pedp+link.bikep)/2.0;
+            } else {
+                if (link.wcpave == 5.0) {
+                    link.pave = 1000.0;
+                } else {
+                    link.pave = (link.pedp+link.bikep)/2.0;
+                }
+            }
+
+            linkDao.updateLink(link);
+        }
+    }
+
 }

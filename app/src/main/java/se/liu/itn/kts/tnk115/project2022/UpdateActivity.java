@@ -190,14 +190,14 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             noise = 0.0;
         } else {
             Link activeLink = MainActivity.linkDao.getLink(source,destination);
-            pave = activeLink.pedp;
+            pave = activeLink.pave;
             air = activeLink.air;
             temp = activeLink.temp;
             noise = activeLink.noise;
 
             Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
 
-            pave = 1.0-norm(pave, MainActivity.linkDao.getMaxPed(), MainActivity.linkDao.getMinPed());
+            pave = 1.0-norm(pave, MainActivity.linkDao.getMaxPave(), MainActivity.linkDao.getMinPave());
             paveSlider.setValues((float)pave);
 
             air = 1.0-norm(air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
@@ -255,7 +255,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         Log.d("UpdateActivity","Values: Link: "+source+"->"+destination+String.format(" P:%.2f",pV)+String.format(" A:%.2f",aV)+String.format(" T:%.2f",tV)+String.format(" N:%.2f",nV)+String.format(" O:%.0f",overall));
         Log.d("UpdateActivity","After:  Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise)+String.format(" O:%.0f",overall));
 
-        pave = reverseNorm((1.0-pave), MainActivity.linkDao.getMaxPed(), MainActivity.linkDao.getMinPed());
+        pave = reverseNorm((1.0-pave), MainActivity.linkDao.getMaxPave(), MainActivity.linkDao.getMinPave());
         air = reverseNorm((1.0-air), MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
         temp = reverseNorm((1.0-temp), MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
         noise = 1.0-noise;
@@ -513,7 +513,9 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private double norm(double value, double max, double min) {
-        return ((value-min)/(max-min));
+        if (value > max && value == 1000.0) return 1000;
+        else if (max != min) return ((value-min)/(max-min));
+        else return 1.0;
     }
 
     private double reverseNorm(double value, double max, double min) {
