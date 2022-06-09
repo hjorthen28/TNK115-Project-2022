@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TNK115 - Project 2022</string>
+    <string name="app_name">Project 2022</string>
     <string name="button">Get data</string>
     <string name="buttonUpdate">Update values</string>
     <string name="update">Update data</string>
@@ -8,17 +8,17 @@
     <string name="reduced">Reduced</string>
     <string name="currOut">You are outside the area!</string>
     <string name="markOut">The marker is outside the area!</string>
-    <string name="pave">Pavement-bar</string>
-    <string name="elev">Elevation-bar</string>
-    <string name="air">Air-bar</string>
-    <string name="tt">Travel time-bar</string>
-    <string name="noise">Noise-bar</string>
-    <string name="temp">Temperature-bar</string>
+    <string name="pave">Pavement</string>
+    <string name="elev">Elevation</string>
+    <string name="air">Air quality</string>
+    <string name="tt">Travel time</string>
+    <string name="noise">Noise</string>
+    <string name="temp">Temperature</string>
     <string name="overall">Overall feeling</string>
     <string name="linkInfo">Current values:</string>
     <string name="linkPave">Pavement quality:</string>
     <string name="linkTemp">Temperature:</string>
     <string name="linkAir">Air quality:</string>
     <string name="linkNoise">Noise:</string>
-    <string name="stairs">Stairs</string>
+    <string name="stairs">Toggle stairs</string>
 </resources>

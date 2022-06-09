@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TNK115 - Projekt 2022</string>
+    <string name="app_name">Projekt 2022</string>
     <string name="button">Hämta data</string>
     <string name="buttonUpdate">Uppdatera värden</string>
     <string name="update">Uppdatera data</string>

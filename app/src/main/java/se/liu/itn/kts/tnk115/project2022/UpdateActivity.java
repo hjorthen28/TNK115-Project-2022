@@ -58,7 +58,8 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     private LocationCallback locationCallback;
     private int source = 0, destination = 0;
     private Polyline activeLink;
-    private double pave, air, temp, noise, overall;
+    private double pave, air, temp, noise;
+    private int overall;
     private String address = "130.236.81.13";
     private int port = 8718;
 
@@ -105,7 +106,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MainActivity", "Map ready");
+        Log.d("UpdateActivity", "Map ready");
         uMap = googleMap;
         uMap.clear();
         LatLng norrkoping = new LatLng(58.59097655119428, 16.183341830042274);
@@ -181,7 +182,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         overallSlider.setMinSeparation(1f);
         overallSlider.setMinSeparationValue(1f);
         overallSlider.setValues(5f);
-        overall = 5.0;
+        overall = 5;
 
         if (path.equals("") || path == null || source == 0 || destination == 0) {
             pave = 0.0;
@@ -197,7 +198,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
             Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
 
-            pave = 1.0-norm(pave, MainActivity.linkDao.getMaxPave(), MainActivity.linkDao.getMinPave());
+            pave = 1.0-pave;
             paveSlider.setValues((float)pave);
 
             air = 1.0-norm(air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
@@ -226,43 +227,55 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
     //TODO: Implement updating of values
     private void updateValues() {
-        Log.d("UpdateActivity","Before: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
+        Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
+        Log.d("UpdateActivity","Before: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
+
+        double pN = 100.0;
+        double aN = 100.0;
+        double tN = 100.0;
+        double nN = 100.0;
 
         RangeSlider paveSlider = (RangeSlider) findViewById(R.id.pave_uBar);
         List<Float> paveValues = paveSlider.getValues();
         double pV = paveValues.get(0);
-        pave = newValue(pV, pave);
+        if (pV != pave) {
+            pN = 1.0-pV;
+        }
+        //pave = newValue(pV, pave);
 
         RangeSlider airSlider = (RangeSlider) findViewById(R.id.air_uBar);
         List<Float> airValues = airSlider.getValues();
         double aV = airValues.get(0);
-        air = newValue(aV, air);
+        if (aV != air) {
+            aN = 1.0-aV;
+        }
+        //air = newValue(aV, air);
 
         RangeSlider tempSlider = (RangeSlider) findViewById(R.id.temp_uBar);
         List<Float> tempValues = tempSlider.getValues();
         double tV = tempValues.get(0);
-        temp = newValue(tV, temp);
+        if (tV != temp) {
+            tN = 1.0-tV;
+        }
+        //temp = newValue(tV, temp);
 
         RangeSlider noiseSlider = (RangeSlider) findViewById(R.id.noise_uBar);
         List<Float> noiseValues = noiseSlider.getValues();
         double nV = noiseValues.get(0);
-        noise = newValue(nV, noise);
+        if (nV != noise) {
+            nN = 1.0-nV;
+        }
+        //noise = newValue(nV, noise);
 
         RangeSlider overallSlider = (RangeSlider) findViewById(R.id.overall_uBar);
         List<Float> overallValues = overallSlider.getValues();
-        overall = overallValues.get(0);
+        overall = Math.round(overallValues.get(0));
 
-        Log.d("UpdateActivity","Values: Link: "+source+"->"+destination+String.format(" P:%.2f",pV)+String.format(" A:%.2f",aV)+String.format(" T:%.2f",tV)+String.format(" N:%.2f",nV)+String.format(" O:%.0f",overall));
-        Log.d("UpdateActivity","After:  Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise)+String.format(" O:%.0f",overall));
+        Log.d("UpdateActivity","After : Link: "+source+"->"+destination+String.format(" Pave:%.2f",pV)+String.format(" Air:%.2f",aV)+String.format(" Temp:%.2f",tV)+String.format(" Noise:%.2f",nV));
+        Log.d("UpdateActivity","Sending : Link: "+source+"->"+destination+String.format(" Pave:%.2f",pN)+String.format(" Air:%.2f",aN)+String.format(" Temp:%.2f",tN)+String.format(" Noise:%.2f",nN)+" Overall:"+overall);
+        //Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
 
-        pave = reverseNorm((1.0-pave), MainActivity.linkDao.getMaxPave(), MainActivity.linkDao.getMinPave());
-        air = reverseNorm((1.0-air), MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
-        temp = reverseNorm((1.0-temp), MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
-        noise = 1.0-noise;
-
-        Log.d("UpdateActivity","New values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
-
-        //getLastKnownLocation();
+        getLastKnownLocation(pN, aN, tN, nN);
     }
 
     protected void startCollecting() {
@@ -274,7 +287,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    Log.d("MainActivity", "Updating GUI with current location.");
+                    Log.d("UpdateActivity", "Updating GUI with current location.");
                     if (path.equals("") || path == null) {
                         stopCollecting();
                     } else {
@@ -305,7 +318,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     protected LocationRequest createLocationRequest() {
-        Log.d("MainActivity", "Creating LocationRequest");
+        Log.d("UpdateActivity", "Creating LocationRequest");
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(20 * 1000);
         locationRequest.setFastestInterval(10 * 1000);
@@ -383,7 +396,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     // Get last location and start the make route process
-    protected void getLastKnownLocation() {
+    protected void getLastKnownLocation(double p, double a, double t, double n) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -399,17 +412,17 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             public void onSuccess(Location location) {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
-                    Log.d("MainActivity", "Updating GUI with last known location.");
-                    //sendUpdate(location);
+                    Log.d("UpdateActivity", "Updating GUI with last known location.");
+                    sendUpdate(p, a, t, n, location);
                 } else {
-                    Log.d("MainActivity", "getLastKnownLocation null...");
+                    Log.d("UpdateActivity", "getLastKnownLocation null...");
                 }
             }
         });
     }
 
     // Transmit data between database and local unit
-    private void sendUpdate(Location location) {
+    private void sendUpdate(double p, double a, double t, double n, Location location) {
         String result = null;
 
         TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -422,26 +435,31 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         }
 
         String IMEI = tm.getDeviceId();
+        Log.d("UpdateActivity","IMEI: "+IMEI);
 
         JSONObject message = new JSONObject();
         try {
             message.put("message_type", "project2022update");
-            message.put("imei",IMEI);
-            message.put("origin",source);
-            message.put("destination",destination);
-            message.put("pavement",String.format(".2f",pave));
-            message.put("air",air);
-            message.put("temp",temp);
-            message.put("noise",noise);
-            message.put("overall",overall);
+            JSONObject update = new JSONObject();
+            message.put("update",update);
+
+            update.put("imei",IMEI);
+            update.put("origin",Integer.toString(source));
+            update.put("destination",Integer.toString(destination));
+            update.put("pavement",String.format("%.2f",p));
+            update.put("air",String.format("%.2f",a));
+            update.put("temp",String.format("%.2f",t));
+            update.put("noise",String.format("%.2f",n));
+            update.put("overall",Integer.toString(overall));
 
             JSONObject locationData = new JSONObject();
-            message.put("location",locationData);
+            update.put("location",locationData);
 
-            locationData.put("longitude",location.getLongitude());
-            locationData.put("latitude",location.getLatitude());
+
+            locationData.put("longitude",String.format("%.8f",location.getLongitude()));
+            locationData.put("latitude",String.format("%.8f",location.getLatitude()));
         } catch (JSONException e) {
-            Log.e("MainActivity", "JSONException in getData: " + e.toString());
+            Log.e("UpdateActivity", "JSONException in getData: " + e.toString());
         }
 
         StringBuilder builder = new StringBuilder();
@@ -477,7 +495,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             String response = holder.toString();
 
             response = response.trim();
-            Log.d("MainActivity", "Response: " + response);
+            Log.d("UpdateActivity", "Response: " + response);
             if (response.startsWith("{") || response.startsWith("[")) {
                 try {
                     if (response.startsWith("[")) {
@@ -487,7 +505,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
                         responseMessage = new JSONObject(response);
                     }
                 } catch (JSONException e) {
-                    Log.w("MainActivity", "JSONException 1: " + e.toString());
+                    Log.w("UpdateActivity", "JSONException 1: " + e.toString());
                 }
             }
 
@@ -495,20 +513,20 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             socket.close();
 
         } catch (IOException e) {
-            Log.w("MainActivity", "IOException: " + e.toString());
+            Log.w("UpdateActivity", "IOException: " + e.toString());
         }
-        Log.d("MainActivity", "Update message sent!");
-        Log.d("MainActivity", message.toString());
-        Log.d("MainActivity", "Update message received");
-        if (responseMessage == null) Log.w("MainActivity", "Response null");
-        else Log.d("MainActivity", responseMessage.toString());
+        Log.d("UpdateActivity", "Update message sent!");
+        Log.d("UpdateActivity", message.toString());
+        Log.d("UpdateActivity", "Update message received");
+        if (responseMessage == null) Log.w("UpdateActivity", "Response null");
+        else Log.d("UpdateActivity", responseMessage.toString());
 
         /*try {
             if (responseMessage.has(input)) {
                 result = responseMessage.getString(input);
             }
         } catch (JSONException e) {
-            Log.w("MainActivity", "JSONException: " + e.toString());
+            Log.w("UpdateActivity", "JSONException: " + e.toString());
         }*/
     }
 
@@ -523,7 +541,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private double newValue(double nV, double cV) {
-        return cV+((nV-cV)*(1-Math.pow(nV-cV,0.33)));
+        return cV+((nV-cV)*(1-Math.pow(Math.abs(nV-cV),0.33)));
     }
 
 }

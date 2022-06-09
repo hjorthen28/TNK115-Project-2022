@@ -40,8 +40,23 @@ public class OptPlan {
 
         // If no weights are active the algorithm just takes the shortest distance
         if (paveRate == 0 && elevRate == 0 && airRate == 0 && ttRate == 0 && tempRate == 0 && noiseRate == 0) {
+            minDist = MainActivity.linkDao.getMinDist();
+            maxDist = MainActivity.linkDao.getMaxDist();
+            Log.d("OptPlan","Dist: "+minDist+" "+maxDist);
+
             for (int i=0; i<linkList.size(); i++) {
-                cost = (double)linkList.get(i).dist;
+                // The default link cost
+                //cost = linkList.get(i).dist;
+
+                distNorm = norm(linkList.get(i).dist,maxDist,minDist);
+
+                // If the user has opted to remove stairs:
+                if (mode == 2 && linkList.get(i).wcpave >= 5.0) {
+                    // The links with stairs get a huge penalty
+                    cost = 1000.0+distNorm;
+                } else {
+                    cost = distNorm;
+                }
 
                 //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 
@@ -86,6 +101,7 @@ public class OptPlan {
             maxTT = Double.MIN_VALUE;
             for (int i=0; i<linkList.size(); i++) {
                 double value = 0.0;
+                // The calculation of travel time based on which mode the user has chosen
                 /*if (mode == 1) {
                     value = ((linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
                 } else if (mode == 2) {
@@ -93,6 +109,7 @@ public class OptPlan {
                 } else {
                     value = ((linkList.get(i).dist) / (5.5*linkList.get(i).ttcong*linkList.get(i).ttelev*linkList.get(i).ttcycle));
                 }*/
+                // The modified version:
                 value = ((linkList.get(i).dist) / (1.5*linkList.get(i).ttcong*linkList.get(i).ttelev));
                 if (value >= maxTT) maxTT = value;
                 if (value <= minTT) minTT = value;
@@ -106,7 +123,8 @@ public class OptPlan {
                 else if (mode == 2) paveNorm = norm(linkList.get(i).wcpave,maxPave,minPave);
                 else paveNorm = norm(linkList.get(i).bikep,maxPave,minPave);*/
 
-                paveNorm = norm(linkList.get(i).pave,maxPave,minPave);
+                //paveNorm = norm(linkList.get(i).pave,maxPave,minPave);
+                paveNorm = linkList.get(i).pave;
                 elevNorm = norm(linkList.get(i).elev,maxElev,minElev);
                 airNorm = norm(linkList.get(i).air,maxAir,minAir);
                 distNorm = norm(linkList.get(i).dist,maxDist,minDist);
@@ -114,7 +132,11 @@ public class OptPlan {
                 tempNorm = norm(linkList.get(i).temp,maxTemp,minTemp);
                 noiseNorm = norm(linkList.get(i).noise,maxNoise,minNoise);
 
-                cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate+noiseNorm*noiseRate+tempNorm*tempRate)*distNorm+ttNorm*ttRate);
+                if (mode == 2 && linkList.get(i).wcpave >= 5.0) {
+                    cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate+noiseNorm*noiseRate+tempNorm*tempRate)*distNorm+ttNorm*ttRate+1000.0);
+                } else {
+                    cost = ((paveNorm*paveRate+elevNorm*elevRate+airNorm*airRate+noiseNorm*noiseRate+tempNorm*tempRate)*distNorm+ttNorm*ttRate);
+                }
 
                 //Log.d("OptPlan","S:"+linkList.get(i).source+"->D:"+linkList.get(i).destination+" Path cost: "+cost);
 
@@ -144,7 +166,7 @@ public class OptPlan {
     }
 
     private double norm(double value, double max, double min) {
-        if (value > max && value == 1000.0) return 1000;
+        if (value > max) return 1000.0;
         else if (max != min) return ((value-min)/(max-min));
         else return 1.0;
     }

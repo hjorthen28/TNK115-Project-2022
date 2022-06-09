@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String path = null;
     private Intent updateIntent;
     private RangeSlider paveSlider, elevSlider, airSlider, ttSlider, tempSlider, noiseSlider;
+    private ArrayList<Polyline> grid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("MainActivity", "Got links from DB");
                     data = true;
                     map.setMyLocationEnabled(true);
+                    displayLinks();
                 } else {
                     // Ask the user for read phone permission
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
@@ -184,13 +186,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         Switch stairs = (Switch) findViewById(R.id.switchStairs);
+        stairs.setChecked(true);
+        mode = 1;
         stairs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    mode = 2;
-                } else {
+                    // Use stairs
                     mode = 1;
+                } else {
+                    // Avoid stairs
+                    mode = 2;
                 }
                 if (data) getLastKnownLocation();
                 Log.d("MainActivity","Mode change: "+mode);
@@ -338,6 +344,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             map.setMyLocationEnabled(true);
         }
 
+        grid = new ArrayList<>();
+        if (data) displayLinks();
         if (path != null) displayPath();
     }
 
@@ -349,9 +357,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         paveSlider.setStepSize(1f);
         paveSlider.setMinSeparation(1f);
         paveSlider.setMinSeparationValue(1f);
-        paveSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        paveSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -362,9 +375,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         elevSlider.setStepSize(1f);
         elevSlider.setMinSeparation(1f);
         elevSlider.setMinSeparationValue(1f);
-        elevSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        elevSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -375,9 +393,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         airSlider.setStepSize(1f);
         airSlider.setMinSeparation(1f);
         airSlider.setMinSeparationValue(1f);
-        airSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        airSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -388,9 +411,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ttSlider.setStepSize(1f);
         ttSlider.setMinSeparation(1f);
         ttSlider.setMinSeparationValue(1f);
-        ttSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        ttSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -401,9 +429,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         tempSlider.setStepSize(1f);
         tempSlider.setMinSeparation(1f);
         tempSlider.setMinSeparationValue(1f);
-        tempSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        tempSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -414,9 +447,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         noiseSlider.setStepSize(1f);
         noiseSlider.setMinSeparation(1f);
         noiseSlider.setMinSeparationValue(1f);
-        noiseSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
+        noiseSlider.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
             @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
                 if (data) getLastKnownLocation();
             }
         });
@@ -453,6 +491,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String air[] = getData("air").split(";");
         String elev[] = getData("elev").split(";");
         String pave[] = getData("pave").split(";");
+        String pavement[] = getData("pavement").split(";");
         String pedq[] = getData("ped").split(";");
         String wcpave[] = getData("wcpave").split(";");
         String ttcog[] = getData("ttcog").split(";");
@@ -460,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String ttelev[] = getData("ttelev").split(";");
         String ttwcpq[] = getData("ttwcpq").split(";");
         String temp[] = getData("temperature").split(";");
-        //String noise[] = getData("noise").split(";");
+        String noise[] = getData("noise").split(";");
 
         for (int i = 0; i < links.length; i++) {
             Link link = new Link();
@@ -477,8 +516,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             link.elev = Double.parseDouble(el1[2]);
 
             String pa1[] = pave[i].split("-");
-            link.pave = Double.parseDouble(pa1[2]);
-            link.bikep  = link.pave;
+            link.bikep = Double.parseDouble(pa1[2]);
+            String pa2[] = pavement[i].split("-");
+            link.pave  = Double.parseDouble((pa2[2]));
 
             String pe1[] = pedq[i].split("-");
             link.pedp = Double.parseDouble(pe1[2]);
@@ -505,9 +545,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String te2[] = temp[i].split("-");
             link.temp = Double.parseDouble(te2[2]);
 
-            //String no1[] = noise[i].split("-");
-            //link.noise = Double.parseDouble(no1[2]);
-            link.noise = 0.5;
+            String no1[] = noise[i].split("-");
+            link.noise = Double.parseDouble(no1[2]);
+            //link.noise = 0.5;
 
             //Log.d("MainActivity",link.toString());
             linkDao.insertLink(link);
@@ -657,8 +697,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.d("MainActivity","Mode: "+mode+" Pave: "+pave+" Elev: "+elev+" Air: "+air+" TT: "+tt+" Temp: "+temp+" Noise: "+noise);
 
-        updatePave();
-
         OptPlan theOP = new OptPlan();
         theOP.createPlan(mode, pave, elev, air, tt, temp, noise);
 
@@ -741,23 +779,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         line.setColor(Color.argb(255,0,0,0));
     }
 
-    private void updatePave() {
+    private void displayLinks() {
         List<Link> links = linkDao.getAllLinks();
 
-        for (int i=0; i<links.size(); i++) {
-            Link link = links.get(i);
-
-            if (mode == 1) {
-                link.pave = (link.pedp+link.bikep)/2.0;
-            } else {
-                if (link.wcpave == 5.0) {
-                    link.pave = 1000.0;
-                } else {
-                    link.pave = (link.pedp+link.bikep)/2.0;
-                }
+        if (grid.size() != 0 && grid != null) {
+            for (int i = 0; i<grid.size(); i++) {
+                grid.get(i).remove();
             }
+            grid.clear();
+        }
 
-            linkDao.updateLink(link);
+        for (int i = 0; i<links.size(); i++) {
+            Node s = nodeDao.getNode(links.get(i).source);
+            Node d = nodeDao.getNode(links.get(i).destination);
+
+            Polyline link = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(s.lat,s.lng))
+                    .add(new LatLng(d.lat,d.lng)));
+            link.setWidth(10.0f);
+            link.setColor(Color.argb(25,0,0,0));
+            grid.add(link);
         }
     }
 
