@@ -77,7 +77,6 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         mapFragment.getMapAsync(this);
 
         Button button = (Button) findViewById(R.id.buttonUpdate);
-        //TODO: Add button listener and other logic
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +152,6 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         line.setColor(Color.argb(255,0,0,0));
     }
 
-    //TODO: Update with correct sliders
     private void configureSliders() {
 
         RangeSlider paveSlider = (RangeSlider) findViewById(R.id.pave_uBar);
@@ -225,7 +223,6 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-    //TODO: Implement updating of values
     private void updateValues() {
         Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
         Log.d("UpdateActivity","Before: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));

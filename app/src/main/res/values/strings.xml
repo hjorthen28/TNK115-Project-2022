@@ -14,7 +14,7 @@
     <string name="tt">Travel time</string>
     <string name="noise">Noise</string>
     <string name="temp">Temperature</string>
-    <string name="overall">Overall feeling</string>
+    <string name="overall">General feeling</string>
     <string name="linkInfo">Current values:</string>
     <string name="linkPave">Pavement quality:</string>
     <string name="linkTemp">Temperature:</string>

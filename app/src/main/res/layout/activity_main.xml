@@ -6,6 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:uiRotateGestures="true"
+        app:uiZoomControls="true" />
+
     <TextView
         android:id="@+id/tt_text"
         android:layout_width="wrap_content"
@@ -33,51 +52,39 @@
         app:layout_constraintBottom_toTopOf="@+id/elev_bar"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="275dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:uiRotateGestures="true"
-        app:uiZoomControls="true" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:text="@string/button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button2"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/elev_bar" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/pave_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/temp_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_main" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/elev_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -91,27 +98,27 @@
         android:id="@+id/air_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/noise_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_main" />
 
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/tt_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noise_bar" />
 
@@ -128,7 +135,7 @@
         android:id="@+id/noise_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
@@ -152,7 +159,7 @@
         android:id="@+id/temp_bar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -177,25 +184,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
         android:text="@string/update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button" />
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/tt_bar" />
 
     <Switch
         android:id="@+id/switchStairs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/temp_bar"
         app:layout_constraintEnd_toStartOf="@+id/air_bar"
         app:layout_constraintStart_toEndOf="@+id/pave_bar"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_main" />
 
     <TextView
         android:id="@+id/stairs_text"

@@ -6,16 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".UpdateActivity">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUpdate"
+        app:layout_constraintEnd_toStartOf="@+id/overall_uBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temp_uBar"
+        app:srcCompat="@drawable/ic_sad_dark" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_update_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_update_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
     <fragment
         android:id="@+id/uMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="200dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="275dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_update_horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_update_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:uiRotateGestures="true"
         app:uiZoomControls="true" />
 
@@ -23,15 +49,15 @@
         android:id="@+id/pave_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/temp_uBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uMap"
+        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -47,7 +73,7 @@
         android:id="@+id/temp_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -70,15 +96,15 @@
         android:id="@+id/air_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/noise_uBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uMap" />
+        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal" />
 
     <TextView
         android:id="@+id/air_uText"
@@ -93,7 +119,7 @@
         android:id="@+id/noise_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="140dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
@@ -116,10 +142,10 @@
         android:id="@+id/overall_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="0dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="48dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
@@ -145,84 +171,101 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="16dp"
         android:text="@string/buttonUpdate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overall_uBar" />
 
     <TextView
         android:id="@+id/linkInfo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/linkInfo"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/linkPave_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/uMap"
+        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/linkPave_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/linkPave"
         app:layout_constraintBottom_toTopOf="@+id/linkTemp_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/uMap"
+        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
         app:layout_constraintTop_toBottomOf="@+id/linkInfo_text" />
 
     <TextView
         android:id="@+id/linkTemp_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/linkTemp"
         app:layout_constraintBottom_toTopOf="@+id/linkAir_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/uMap"
+        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
         app:layout_constraintTop_toBottomOf="@+id/linkPave_text" />
 
     <TextView
         android:id="@+id/linkAir_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/linkAir"
         app:layout_constraintBottom_toTopOf="@+id/linkNoise_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/uMap"
+        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
         app:layout_constraintTop_toBottomOf="@+id/linkTemp_text" />
 
     <TextView
         android:id="@+id/linkNoise_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/linkNoise"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_update_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/uMap"
+        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
         app:layout_constraintTop_toBottomOf="@+id/linkAir_text" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUpdate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/overall_uBar"
+        app:layout_constraintTop_toBottomOf="@+id/noise_uBar"
+        app:srcCompat="@drawable/ic_smile_dark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
