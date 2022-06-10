@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -62,6 +63,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
     private int overall;
     private String address = "130.236.81.13";
     private int port = 8718;
+    private boolean send = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,7 +274,15 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         Log.d("UpdateActivity","Sending : Link: "+source+"->"+destination+String.format(" Pave:%.2f",pN)+String.format(" Air:%.2f",aN)+String.format(" Temp:%.2f",tN)+String.format(" Noise:%.2f",nN)+" Overall:"+overall);
         //Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
 
-        getLastKnownLocation(pN, aN, tN, nN);
+        if (send) {
+            send = false;
+            getLastKnownLocation(pN, aN, tN, nN);
+            Toast.makeText(this, "Values sent", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d("UpdateActivity","Data not sent due to already sent data for the specific link.");
+            Toast.makeText(this, "You've already sent data for this link", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     protected void startCollecting() {
@@ -372,6 +382,7 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
         Log.d("UpdateActivity","Closest link between node: "+source+" & "+destination);
 
         if (change) {
+            send = true;
             configureSliders();
             uMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latA,lngA), 17.5f));
         }
