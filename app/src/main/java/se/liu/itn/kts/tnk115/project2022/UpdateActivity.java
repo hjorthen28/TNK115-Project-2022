@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -190,42 +192,39 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
             temp = 0.0;
             noise = 0.0;
         } else {
-            Link activeLink = MainActivity.linkDao.getLink(source,destination);
+            Link activeLink = MainActivity.linkDao.getLink(source, destination);
             pave = activeLink.pave;
             air = activeLink.air;
             temp = activeLink.temp;
             noise = activeLink.noise;
 
-            Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" P:%.2f",pave)+String.format(" A:%.2f",air)+String.format(" T:%.2f",temp)+String.format(" N:%.2f",noise));
+            Log.d("UpdateActivity", "Old values: Link: " + source + "->" + destination + String.format(" P:%.2f", pave) + String.format(" A:%.2f", air) + String.format(" T:%.2f", temp) + String.format(" N:%.2f", noise));
 
-            pave = 1.0-pave;
-            paveSlider.setValues((float)pave);
+            pave = 1.0 - pave;
+            paveSlider.setValues((float) pave);
 
-            air = 1.0-norm(air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
-            airSlider.setValues((float)air);
+            air = 1.0 - norm(air, MainActivity.linkDao.getMaxAir(), MainActivity.linkDao.getMinAir());
+            airSlider.setValues((float) air);
 
-            temp = 1.0-norm(temp, MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
-            tempSlider.setValues((float)temp);
+            temp = 1.0 - norm(temp, MainActivity.linkDao.getMaxTemp(), MainActivity.linkDao.getMinTemp());
+            tempSlider.setValues((float) temp);
 
-            noise = 1.0-noise;
-            noiseSlider.setValues((float)noise);
+            noise = 1.0 - noise;
+            noiseSlider.setValues((float) noise);
 
-            Log.d("UpdateActivity","Link: "+source+"->"+destination+" P"+activeLink.pave+" A"+activeLink.air+" T"+activeLink.temp+" N"+activeLink.noise);
-            Log.d("UpdateActivity","Link: "+source+"->"+destination+String.format(" P%.2f",pave)+String.format(" A%.2f",air)+String.format(" T%.2f",temp)+String.format(" N%.2f",noise));
+            Log.d("UpdateActivity", "Link: " + source + "->" + destination + " P" + activeLink.pave + " A" + activeLink.air + " T" + activeLink.temp + " N" + activeLink.noise);
+            Log.d("UpdateActivity", "Link: " + source + "->" + destination + String.format(" P%.2f", pave) + String.format(" A%.2f", air) + String.format(" T%.2f", temp) + String.format(" N%.2f", noise));
         }
-
-        TextView paveText = (TextView) findViewById(R.id.linkPave_text);
-        paveText.setText(getString(R.string.linkPave)+" "+String.format("%.2f",pave));
-        TextView airText = (TextView) findViewById(R.id.linkAir_text);
-        airText.setText(getString(R.string.linkAir)+" "+String.format("%.2f",air));
-        TextView tempText = (TextView) findViewById(R.id.linkTemp_text);
-        tempText.setText(getString(R.string.linkTemp)+" "+String.format("%.2f",temp));
-        TextView noiseText = (TextView) findViewById(R.id.linkNoise_text);
-        noiseText.setText(getString(R.string.linkNoise)+" "+String.format("%.2f",noise));
 
     }
 
     private void updateValues() {
+        if (source == 0 || destination == 0 || path == "" || path.equals("")) {
+            Log.d("UpdateActivity","No link to update");
+            Toast.makeText(this,"No active link to update",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Log.d("UpdateActivity","Old values: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
         Log.d("UpdateActivity","Before: Link: "+source+"->"+destination+String.format(" Pave:%.2f",pave)+String.format(" Air:%.2f",air)+String.format(" Temp:%.2f",temp)+String.format(" Noise:%.2f",noise));
 
@@ -431,18 +430,34 @@ public class UpdateActivity extends AppCompatActivity implements OnMapReadyCallb
 
     // Transmit data between database and local unit
     private void sendUpdate(double p, double a, double t, double n, Location location) {
-        String result = null;
 
         TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            //return result;
-            Log.w("UpdateActivity","Missing permission READ_PHONE_STATE !!!");
-            Log.w("UpdateActivity","Could not send updated values to the server!!!");
-            return;
+        String IMEI;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        {
+            IMEI = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (this.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    Log.w("UpdateActivity","Missing permission READ_PHONE_STATE !!!");
+                    Log.w("UpdateActivity","Could not send updated values to the server!!!");
+                    return;
+                }
+            }
+            assert tm != null;
+            if (tm.getDeviceId() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    IMEI = tm.getImei();
+                } else {
+                    IMEI = tm.getDeviceId();
+                }
+            } else {
+                IMEI = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            }
         }
 
-        String IMEI = tm.getDeviceId();
         Log.d("UpdateActivity","IMEI: "+IMEI);
 
         JSONObject message = new JSONObject();

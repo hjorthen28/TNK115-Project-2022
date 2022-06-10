@@ -24,22 +24,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.55"/>
+        app:layout_constraintGuide_percent="0.50" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_update_horizontal"
+        android:id="@+id/guideline_update_horizontal_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_update_horizontal_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.42" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_update_horizontal_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
 
     <fragment
         android:id="@+id/uMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_update_horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_update_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_update_horizontal_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:uiRotateGestures="true"
@@ -48,16 +62,18 @@
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/pave_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/temp_uBar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_update_vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal_2"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -72,14 +88,16 @@
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/temp_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="8dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/overall_uBar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_update_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pave_uBar" />
 
@@ -95,8 +113,9 @@
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/air_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
@@ -104,7 +123,8 @@
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/noise_uBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal" />
+        app:layout_constraintStart_toStartOf="@+id/guideline_update_vertical"
+        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal_2" />
 
     <TextView
         android:id="@+id/air_uText"
@@ -118,8 +138,9 @@
     <com.google.android.material.slider.RangeSlider
         android:id="@+id/noise_uBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
@@ -127,6 +148,7 @@
         android:progress="3"
         app:layout_constraintBottom_toTopOf="@+id/overall_uBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_update_vertical"
         app:layout_constraintTop_toBottomOf="@+id/air_uBar" />
 
     <TextView
@@ -168,11 +190,11 @@
 
     <Button
         android:id="@+id/buttonUpdate"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:text="@string/buttonUpdate"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -182,78 +204,20 @@
 
     <TextView
         android:id="@+id/linkInfo_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/linkInfo"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/linkPave_text"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/guideline_update_horizontal_2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/linkPave_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/linkPave"
-        app:layout_constraintBottom_toTopOf="@+id/linkTemp_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/linkInfo_text" />
-
-    <TextView
-        android:id="@+id/linkTemp_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/linkTemp"
-        app:layout_constraintBottom_toTopOf="@+id/linkAir_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/linkPave_text" />
-
-    <TextView
-        android:id="@+id/linkAir_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/linkAir"
-        app:layout_constraintBottom_toTopOf="@+id/linkNoise_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/linkTemp_text" />
-
-    <TextView
-        android:id="@+id/linkNoise_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/linkNoise"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_update_horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/guideline_update_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/linkAir_text" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_update_horizontal_1"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView"

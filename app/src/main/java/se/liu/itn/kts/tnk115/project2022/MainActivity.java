@@ -144,13 +144,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     // Get nodes and links from external database
                     Log.d("MainActivity", "GetData Button clicked");
-                    getNodes();
+                    int res1 = getNodes();
                     Log.d("MainActivity", "Got nodes from DB");
-                    getLinks();
+                    int res2 = getLinks();
                     Log.d("MainActivity", "Got links from DB");
-                    data = true;
-                    map.setMyLocationEnabled(true);
-                    displayLinks();
+                    if (res1 == 0 && res2 == 0) {
+                        data = true;
+                        map.setMyLocationEnabled(true);
+                        displayLinks();
+                    }
                 } else {
                     // Ask the user for read phone permission
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
@@ -461,12 +463,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // Get nodes from database and put them in the local database
-    private void getNodes() {
+    private int getNodes() {
         String nodes = getData("nodes");
-        if (nodes == null) {
-            while (nodes == null) {
-                nodes = getData("nodes");
-            }
+        nodes = getData("nodes");
+        if (nodes == null || nodes.equals("")) {
+            Toast.makeText(this, "Could not get nodes", Toast.LENGTH_SHORT).show();
+            return 1;
         }
         String nodesSplit[] = nodes.split(";");
         for (int i = 0; i < nodesSplit.length; i++) {
@@ -483,11 +485,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("MainActivity", nodesSplit.length + " nodes read from database");
         Log.d("MainActivity","# of nodes in the local database: "+nodeDao.getLength());
         Toast.makeText(MainActivity.this, "Got nodes", Toast.LENGTH_SHORT).show();
+
+        return 0;
     }
 
     // Get link data from database and put them in local database
-    private void getLinks() {
-        String links[] = getData("links").split(";");
+    private int getLinks() {
+        String linksS = getData("links");
+        if (linksS == null || linksS.equals("")) {
+            Toast.makeText(this, "Could not get links", Toast.LENGTH_SHORT).show();
+            return 1;
+        }
+
+        String links[] = linksS.split(";");
         String air[] = getData("air").split(";");
         String elev[] = getData("elev").split(";");
         String pave[] = getData("pave").split(";");
@@ -556,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("MainActivity", links.length + " links read from database");
         Log.d("MainActivity","Number of links in the local database: "+linkDao.getLength());
         Toast.makeText(MainActivity.this, "Got links!", Toast.LENGTH_SHORT).show();
+        return 0;
     }
 
     // Transmit data between database and local unit
@@ -632,7 +643,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("MainActivity", "Message sent " + input);
         Log.d("MainActivity", message.toString());
         Log.d("MainActivity", "Message received: " + input);
-        if (responseMessage == null) Log.w("MainActivity", "Response null");
+        if (responseMessage == null) {
+            Log.w("MainActivity", "Response null");
+            return null;
+        }
         else Log.d("MainActivity", responseMessage.toString());
 
         try {

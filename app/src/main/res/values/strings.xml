@@ -15,10 +15,7 @@
     <string name="noise">Noise</string>
     <string name="temp">Temperature</string>
     <string name="overall">General feeling</string>
-    <string name="linkInfo">Current values:</string>
-    <string name="linkPave">Pavement quality:</string>
-    <string name="linkTemp">Temperature:</string>
-    <string name="linkAir">Air quality:</string>
-    <string name="linkNoise">Noise:</string>
+    <string name="linkInfo">The sliders represent the current values of the road.\nPlease change them according to your preferences.</string>
     <string name="stairs">Toggle stairs</string>
+    <string name="info">Slide to the right to increase impact of a parameter to the route you get.</string>
 </resources>

@@ -16,10 +16,7 @@
     <string name="noise">Ljudnivå</string>
     <string name="temp">Temperatur</string>
     <string name="overall">Generell känsla</string>
-    <string name="linkInfo">Nuvarande värden:</string>
-    <string name="linkPave">Vägkvalitet:</string>
-    <string name="linkTemp">Temperatur:</string>
-    <string name="linkAir">Luftkvalitet:</string>
-    <string name="linkNoise">Ljudnivå:</string>
     <string name="stairs">Trappor</string>
+    <string name="linkInfo">Reglagen visar vägens nuvarande värden.\nVänligen justera dem enligt dina preferenser.</string>
+    <string name="info">Dra till höger för att öka effekten av en paramter på din rutt.</string>
 </resources>
