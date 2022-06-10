@@ -2,6 +2,7 @@ package se.liu.itn.kts.tnk115.project2022;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Guideline;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.room.Room;
@@ -134,8 +135,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        if (nodeDao.getLength() != 0 && linkDao.getLength() != 0) data = true;
-        else data = false;
+        Guideline guideline = (Guideline) findViewById(R.id.guideline_main_vertical_2);
+
+        if (nodeDao.getLength() != 0 && linkDao.getLength() != 0) {
+            data = true;
+            button.setVisibility(4);
+            guideline.setGuidelinePercent(0.0f);
+            Log.d("MainActivity","Button visibility: " + button.getVisibility());
+        } else {
+            data = false;
+            button.setVisibility(0);
+            guideline.setGuidelinePercent(0.45f);
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         data = true;
                         map.setMyLocationEnabled(true);
                         displayLinks();
+                        button.setVisibility(4);
+                        guideline.setGuidelinePercent(0.0f);
                     }
                 } else {
                     // Ask the user for read phone permission
